@@ -1,9 +1,6 @@
 package config;
 
-import controller.ChangePwdController;
-import controller.LoginController;
-import controller.LogoutController;
-import controller.RegisterController;
+import controller.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import spring.AuthService;
@@ -44,5 +41,9 @@ public class ControllerConfig {
     public ChangePwdController changePwdController(){
         ChangePwdController controller = new ChangePwdController();
         return new ChangePwdController();
+    }
+    @Bean
+    public MemberListController memberListController(){
+        return new MemberListController();
     }
 }
