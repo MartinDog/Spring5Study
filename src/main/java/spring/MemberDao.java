@@ -32,37 +32,24 @@ public class MemberDao {
 		List<Member> results = jdbcTemplate.query(new PreparedStatementCreator() {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-				PreparedStatement pstmt = con.prepareStatement("select * from MEMBER where ? between ?;");
+				PreparedStatement pstmt = con.prepareStatement("select * from MEMBER where REGDATE between ? and ? order by REGDATE desc;");
 				pstmt.setTimestamp(1, Timestamp.valueOf(from));
 				pstmt.setTimestamp(2, Timestamp.valueOf(today));
+				System.out.println(pstmt.toString());
 				return pstmt;
 			}
-		}, new RowMapper<Member>() {
-			@Override
-			public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Member member=new Member(rs.getString("EMAIL"),rs.getString("PASSWORD"),rs.getString("NAME"),rs.getTimestamp("REGDATE").toLocalDateTime());
-				member.setId(rs.getLong("ID"));
-				return member;
-			}
-		});
+		}, new memRowMapper());
 
 		return results;
+	}
+	public Member selectById(Long id){
+		Member member = jdbcTemplate.queryForObject("select * from MEMBER where id=?",new memRowMapper(),id);
+		return member;
 	}
 	public Member selectByEmail(String email) {
 		List<Member> results = jdbcTemplate.query(
 				"select * from MEMBER where EMAIL = ?",
-				new RowMapper<Member>() {
-					@Override
-					public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-						Member member = new Member(
-								rs.getString("EMAIL"),
-								rs.getString("PASSWORD"),
-								rs.getString("NAME"),
-								rs.getTimestamp("REGDATE").toLocalDateTime());
-						member.setId(rs.getLong("ID"));
-						return member;
-					}
-				}, email);
+				new memRowMapper(), email);
 
 		return results.isEmpty() ? null : results.get(0);
 	}
