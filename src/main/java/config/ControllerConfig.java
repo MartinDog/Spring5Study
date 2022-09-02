@@ -9,8 +9,7 @@ import spring.MemberRegisterService;
 import survey.SurveyController;
 
 @Configuration
-@ComponentScan({"spring","controller"})
-@Import(MemberConfig.class)
+@ComponentScan({"spring"})
 public class ControllerConfig {
     @Autowired
     private MemberRegisterService memberRegisterService;
@@ -51,5 +50,6 @@ public class ControllerConfig {
     public memberDetailController memberdetailController(){
         return new memberDetailController();
     }
-
+    @Bean
+    public RestMemberController restMemberController(){return new RestMemberController();}
 }
