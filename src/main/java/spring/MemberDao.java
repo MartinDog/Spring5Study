@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import com.mysql.cj.result.Row;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -43,8 +44,13 @@ public class MemberDao {
 		return results;
 	}
 	public Member selectById(Long id){
-		Member member = jdbcTemplate.queryForObject("select * from MEMBER where id=?",new memRowMapper(),id);
-		return member;
+		try {
+			Member member = jdbcTemplate.queryForObject("select * from MEMBER where id=?", new memRowMapper(), id);
+			return member;
+		}
+		catch(EmptyResultDataAccessException e){
+			return null;
+		}
 	}
 	public Member selectByEmail(String email) {
 		List<Member> results = jdbcTemplate.query(
@@ -114,8 +120,12 @@ public class MemberDao {
 							rs.getString("EMAIL"),
 							rs.getString("PASSWORD"),
 							rs.getString("NAME"),
-							rs.getTimestamp("REGDATE").toLocalDateTime());
+							null);
 					member.setId(rs.getLong("ID"));
+					if(rs.getTimestamp("REGDATE")!=null){
+						member.setRegdate(rs.getTimestamp("REGDATE").toLocalDateTime());
+
+					}
 					return member;
 				});
 		return results;

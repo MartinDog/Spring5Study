@@ -22,7 +22,10 @@ public class RegisterRequestValidator implements Validator {
 
     public void validate(Object target, Errors errors) {
            RegisterRequest regReq=(RegisterRequest) target;
-           if(regReq.getEmail()==null||regReq.getEmail().trim().isEmpty()){
+           if(regReq.getEmail()==null){
+               errors.rejectValue("email","required");
+           }
+           else if(regReq.getEmail().trim().isEmpty()){
                errors.rejectValue("email","required");
            }
            else{
@@ -31,13 +34,25 @@ public class RegisterRequestValidator implements Validator {
                    errors.rejectValue("email","email.bad");
                }
            }
+            if(regReq.getPassword()==null){
+                errors.rejectValue("password","required");
+            }
+        if(regReq.getConfirmPassword()==null){
+            errors.rejectValue("confirmPassword","required");
+        }
+        if(regReq.getName()==null){
+            errors.rejectValue("name","required");
+        }
            ValidationUtils.rejectIfEmptyOrWhitespace(errors,"name","required");
            ValidationUtils.rejectIfEmpty(errors,"password","required");
            ValidationUtils.rejectIfEmpty(errors,"confirmPassword","required");
-           if(!regReq.getPassword().isEmpty()){
-               if(!regReq.isPasswordEqualToConfirmPassword()){
-                    errors.rejectValue("confirmPassword","nomatch");
+           if(regReq.getPassword()!=null){
+               if(!regReq.getPassword().isEmpty()){
+                   if(!regReq.isPasswordEqualToConfirmPassword()){
+                       errors.rejectValue("confirmPassword","nomatch");
+                   }
                }
+
            }
     }
 }

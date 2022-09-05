@@ -1,15 +1,26 @@
 package spring;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-
+@Entity
+@Table(name = "member2")
 public class Member {
 
+	@Id
 	private Long id;
+	@Column(name = "email")
 	private String email;
+	@JsonIgnore
 	private String password;
 	private String name;
+	//@JsonFormat(pattern = "yyyyMMddHHmmss")
+	@JsonFormat(shape= JsonFormat.Shape.STRING)
 	private LocalDateTime registerDateTime;
 	public boolean matchPassword(String password){
 		return this.password.equals(password);
@@ -21,11 +32,13 @@ public class Member {
 		this.name = name;
 		this.registerDateTime = regDateTime;
 	}
-
+	public Member(){
+		this("null","null","null",null);
+	}
 	void setId(Long id) {
 		this.id = id;
 	}
-
+	void setRegdate(LocalDateTime time){this.registerDateTime = time;}
 	public Long getId() {
 		return id;
 	}
